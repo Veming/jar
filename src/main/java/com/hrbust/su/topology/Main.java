@@ -26,9 +26,9 @@ public class Main {
 
 		builder.setBolt("B3", new B3()).shuffleGrouping("B21").shuffleGrouping("B23").shuffleGrouping("B22");
 
-        Config conf = new Config();
-        LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("topology", conf, builder.createTopology());
+      		Config conf = new Config();
+		conf.setNumWorkers(3);
+		StormSubmitter.submitTopology("topology", conf, builder.createTopology());
 
 	}
 
