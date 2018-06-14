@@ -5,10 +5,14 @@ import com.hrbust.su.spouts.S1;
 import com.hrbust.su.spouts.S2;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
+import org.apache.storm.StormSubmitter;
+import org.apache.storm.generated.AlreadyAliveException;
+import org.apache.storm.generated.AuthorizationException;
+import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.topology.TopologyBuilder;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InvalidTopologyException, AuthorizationException, AlreadyAliveException {
 
 		// TODO Auto-generated method stub
 
@@ -26,9 +30,16 @@ public class Main {
 
 		builder.setBolt("B3", new B3()).shuffleGrouping("B21").shuffleGrouping("B23").shuffleGrouping("B22");
 
-      		Config conf = new Config();
-		conf.setNumWorkers(3);
-		StormSubmitter.submitTopology("topology", conf, builder.createTopology());
+		Config conf = new Config();
+		if (args.length>0){
+			conf.setNumWorkers(3);
+			StormSubmitter.submitTopology("topology", conf, builder.createTopology());
+		}
+        else{
+      		  	LocalCluster cluster = new LocalCluster();
+       	  	  	cluster.submitTopology("topology", conf, builder.createTopology());
+		}
+
 
 	}
 
